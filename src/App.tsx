@@ -1,6 +1,6 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { Toaster } from 'react-hot-toast';
 
 // Layouts
 import { DashboardLayout } from './components/layout/DashboardLayout';
@@ -10,8 +10,8 @@ import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
 
 // Dashboard Pages
-import { EntrepreneurDashboard } from './pages/dashboard/EntrepreneurDashboard';
-import { InvestorDashboard } from './pages/dashboard/InvestorDashboard';
+import EntrepreneurDashboard from './pages/dashboard/EntrepreneurDashboard';
+import InvestorDashboard from './pages/dashboard/InvestorDashboard';
 
 // Profile Pages
 import { EntrepreneurProfile } from './pages/profile/EntrepreneurProfile';
@@ -30,9 +30,13 @@ import { DealsPage } from './pages/deals/DealsPage';
 // Chat Pages
 import { ChatPage } from './pages/chat/ChatPage';
 
+// Calendar Pages
+import CalendarPage from './pages/calendar/CalendarPage';
+
 function App() {
   return (
     <AuthProvider>
+      <Toaster position="top-right" />
       <Router>
         <Routes>
           {/* Authentication Routes */}
@@ -82,6 +86,11 @@ function App() {
           
           <Route path="/deals" element={<DashboardLayout />}>
             <Route index element={<DealsPage />} />
+          </Route>
+          
+          {/* Calendar Routes - NEW ROUTE */}
+          <Route path="/calendar" element={<DashboardLayout />}>
+            <Route index element={<CalendarPage />} />
           </Route>
           
           {/* Chat Routes */}

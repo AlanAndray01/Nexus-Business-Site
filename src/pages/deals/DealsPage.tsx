@@ -64,18 +64,12 @@ export const DealsPage: React.FC = () => {
   
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Due Diligence':
-        return 'primary';
-      case 'Term Sheet':
-        return 'secondary';
-      case 'Negotiation':
-        return 'accent';
-      case 'Closed':
-        return 'success';
-      case 'Passed':
-        return 'error';
-      default:
-        return 'gray';
+      case 'Due Diligence': return 'primary';
+      case 'Term Sheet': return 'secondary';
+      case 'Negotiation': return 'accent';
+      case 'Closed': return 'success';
+      case 'Passed': return 'error';
+      default: return 'gray';
     }
   };
   
@@ -87,9 +81,7 @@ export const DealsPage: React.FC = () => {
           <p className="text-gray-600">Track and manage your investment pipeline</p>
         </div>
         
-        <Button>
-          Add Deal
-        </Button>
+        <Button>Add Deal</Button>
       </div>
       
       {/* Stats */}
@@ -168,14 +160,17 @@ export const DealsPage: React.FC = () => {
             <Filter size={18} className="text-gray-500" />
             <div className="flex flex-wrap gap-2">
               {statuses.map(status => (
-                <Badge
+                <div
                   key={status}
-                  variant={selectedStatus.includes(status) ? getStatusColor(status) : 'gray'}
-                  className="cursor-pointer"
                   onClick={() => toggleStatus(status)}
+                  className="cursor-pointer"
                 >
-                  {status}
-                </Badge>
+                  <Badge
+                    variant={selectedStatus.includes(status) ? getStatusColor(status) : 'gray'}
+                  >
+                    {status}
+                  </Badge>
+                </div>
               ))}
             </div>
           </div>
@@ -227,12 +222,8 @@ export const DealsPage: React.FC = () => {
                           className="flex-shrink-0"
                         />
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {deal.startup.name}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {deal.startup.industry}
-                          </div>
+                          <div className="text-sm font-medium text-gray-900">{deal.startup.name}</div>
+                          <div className="text-sm text-gray-500">{deal.startup.industry}</div>
                         </div>
                       </div>
                     </td>
@@ -243,9 +234,7 @@ export const DealsPage: React.FC = () => {
                       <div className="text-sm text-gray-900">{deal.equity}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <Badge variant={getStatusColor(deal.status)}>
-                        {deal.status}
-                      </Badge>
+                      <Badge variant={getStatusColor(deal.status)}>{deal.status}</Badge>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{deal.stage}</div>
@@ -256,9 +245,7 @@ export const DealsPage: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Button variant="outline" size="sm">
-                        View Details
-                      </Button>
+                      <Button variant="outline" size="sm">View Details</Button>
                     </td>
                   </tr>
                 ))}

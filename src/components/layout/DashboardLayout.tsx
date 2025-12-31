@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 
-export const DashboardLayout: React.FC = () => {
-  const { user, isAuthenticated, isLoading } = useAuth();
+interface DashboardLayoutProps {
+  children?: ReactNode;
+}
+
+export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+  const { 
+    // user, 
+    isAuthenticated, isLoading } = useAuth();
   
   if (isLoading) {
     return (
@@ -26,9 +32,10 @@ export const DashboardLayout: React.FC = () => {
       <div className="flex-1 flex overflow-hidden">
         <Sidebar />
         
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-2">
           <div className="max-w-7xl mx-auto">
-            <Outlet />
+            {/* Render children if provided, else render the outlet */}
+            {children ?? <Outlet />}
           </div>
         </main>
       </div>
