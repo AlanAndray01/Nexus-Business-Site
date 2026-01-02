@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, PieChart, Filter, Search, PlusCircle, Calendar } from 'lucide-react';
+import { Users, PieChart, Filter, Search, PlusCircle, Calendar, Phone, FileText } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Card, CardBody, CardHeader } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Badge } from '../../components/ui/Badge';
 import { EntrepreneurCard } from '../../components/entrepreneur/EntrepreneurCard';
+import VideoCallModal from '../../components/video/VideoCallModal';
 import UpcomingMeetings from '../../components/calendar/UpcomingMeetings';
 import { useAuth } from '../../context/AuthContext';
 import { entrepreneurs } from '../../data/users';
-import { getRequestsFromInvestor } from '../../data/collaborationRequests';
 
 const InvestorDashboard: React.FC = () => {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [upcomingMeetingsCount, setUpcomingMeetingsCount] = useState(0);
+  const [showVideoCallModal, setShowVideoCallModal] = useState(false);
 
   useEffect(() => {
     // Count upcoming meetings
@@ -36,9 +37,6 @@ const InvestorDashboard: React.FC = () => {
   }, []);
 
   if (!user) return null;
-
-  // Collaboration requests sent by this investor
-  const sentRequests = getRequestsFromInvestor(user.id);
 
   // Filter entrepreneurs based on search and industry filters
   const filteredEntrepreneurs = entrepreneurs.filter(entrepreneur => {
@@ -74,11 +72,26 @@ const InvestorDashboard: React.FC = () => {
           <p className="text-gray-600">Find and connect with promising entrepreneurs</p>
         </div>
 
-        <Link to="/entrepreneurs">
-          <Button leftIcon={<PlusCircle size={18} />}>
-            View All Startups
-          </Button>
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            onClick={() => setShowVideoCallModal(true)}
+            className="flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          >
+            <Phone size={18} />
+            <span>Start Video Call</span>
+          </button>
+          <Link to="/documents">
+            <button className="flex items-center justify-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+              <FileText size={18} />
+              <span>Documents</span>
+            </button>
+          </Link>
+          <Link to="/entrepreneurs">
+            <Button leftIcon={<PlusCircle size={18} />}>
+              View All Startups
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Filters and search */}
@@ -201,6 +214,13 @@ const InvestorDashboard: React.FC = () => {
           </CardBody>
         </Card>
       </div>
+
+      {/* Video Call Modal */}
+      <VideoCallModal
+        isOpen={showVideoCallModal}
+        onClose={() => setShowVideoCallModal(false)}
+        availableUsers={entrepreneurs.map(ent => ({ id: ent.id, name: ent.name, role: 'entrepreneur' as const, avatarUrl: ent.avatarUrl }))}
+      />
     </div>
   );
 };

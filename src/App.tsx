@@ -22,7 +22,7 @@ import { InvestorsPage } from './pages/investors/InvestorsPage';
 import { EntrepreneursPage } from './pages/entrepreneurs/EntrepreneursPage';
 import { MessagesPage } from './pages/messages/MessagesPage';
 import { NotificationsPage } from './pages/notifications/NotificationsPage';
-import { DocumentsPage } from './pages/documents/DocumentsPage';
+import  DocumentsPage  from './pages/documents/DocumentsPage';
 import { SettingsPage } from './pages/settings/SettingsPage';
 import { HelpPage } from './pages/help/HelpPage';
 import { DealsPage } from './pages/deals/DealsPage';
@@ -32,6 +32,9 @@ import { ChatPage } from './pages/chat/ChatPage';
 
 // Calendar Pages
 import CalendarPage from './pages/calendar/CalendarPage';
+
+// Video Call Pages - NEW IMPORT
+import VideoCallPage from './pages/video/VideoCallPage';
 
 function App() {
   return (
@@ -88,7 +91,7 @@ function App() {
             <Route index element={<DealsPage />} />
           </Route>
           
-          {/* Calendar Routes - NEW ROUTE */}
+          {/* Calendar Routes */}
           <Route path="/calendar" element={<DashboardLayout />}>
             <Route index element={<CalendarPage />} />
           </Route>
@@ -98,6 +101,9 @@ function App() {
             <Route index element={<ChatPage />} />
             <Route path=":userId" element={<ChatPage />} />
           </Route>
+          
+          {/* Video Call Routes - NEW ROUTE (No DashboardLayout) */}
+          <Route path="/video/:meetingId" element={<VideoCallPage />} />
           
           {/* Redirect root to login */}
           <Route path="/" element={<Navigate to="/login" replace />} />
