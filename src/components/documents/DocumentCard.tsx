@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { FileText, Download, Eye, Edit, Trash2, CheckCircle, Clock, AlertCircle, XCircle } from 'lucide-react';
 import { Document } from '../../types/document';
 
@@ -9,7 +9,7 @@ interface DocumentCardProps {
   onDelete?: (docId: string) => void;
 }
 
-const DocumentCard: React.FC<DocumentCardProps> = ({
+const DocumentCard: React.FC<DocumentCardProps> = memo(({
   document,
   onView,
   onSign,
@@ -171,6 +171,13 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
       </div>
     </div>
   );
-};
+}, (prevProps, nextProps) => {
+  // Custom comparison: only re-render if document content changed
+  return prevProps.document.id === nextProps.document.id &&
+         prevProps.document.status === nextProps.document.status &&
+         prevProps.document.updatedAt === nextProps.document.updatedAt;
+});
+
+DocumentCard.displayName = 'DocumentCard';
 
 export default DocumentCard;

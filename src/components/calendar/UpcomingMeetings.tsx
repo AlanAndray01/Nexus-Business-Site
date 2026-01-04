@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
+// import { Link } from 'react-router-dom';
 import { Calendar, Clock, Video, Phone, MapPin, Users, X, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { CalendarEvent } from '../../types/calendar';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const UpcomingMeetings: React.FC = () => {
   const [meetings, setMeetings] = useState<CalendarEvent[]>([]);
   const [selectedMeeting, setSelectedMeeting] = useState<CalendarEvent | null>(null);
   const [showAll, setShowAll] = useState(false);
+  const navigate = useNavigate();
 
   const loadMeetings = () => {
     const events = window.calendarEvents || [];
@@ -67,6 +70,7 @@ const UpcomingMeetings: React.FC = () => {
 
   if (meetings.length === 0) {
     return (
+      
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-800">Upcoming Meetings</h3>
@@ -77,7 +81,10 @@ const UpcomingMeetings: React.FC = () => {
             <Calendar className="w-8 h-8 text-gray-400" />
           </div>
           <p className="text-gray-600">No upcoming meetings scheduled</p>
-          <button className="mt-4 text-blue-500 hover:text-blue-600 font-medium">
+          <button 
+            onClick={() => navigate('/calendar')}
+            className="mt-4 text-blue-500 hover:text-blue-600 font-medium"
+          >
             Schedule a meeting →
           </button>
         </div>
@@ -199,7 +206,10 @@ const UpcomingMeetings: React.FC = () => {
         </div>
 
         <div className="p-4 border-t bg-gray-50">
-          <button className="w-full text-center text-blue-500 hover:text-blue-600 font-medium">
+          <button 
+            onClick={() => navigate('/calendar')}
+            className="w-full text-center text-blue-500 hover:text-blue-600 font-medium"
+          >
             View Full Calendar
           </button>
         </div>

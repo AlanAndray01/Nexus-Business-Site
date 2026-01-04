@@ -32,8 +32,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
       <div className="flex-1 flex overflow-hidden">
         <Sidebar />
         
-        <main className="flex-1 overflow-y-auto p-2">
-          <div className="max-w-7xl mx-auto">
+        <main className="flex-1 overflow-y-auto p-6">
+          <div className="w-full">
             {/* Render children if provided, else render the outlet */}
             {children ?? <Outlet />}
           </div>

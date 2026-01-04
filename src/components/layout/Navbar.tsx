@@ -24,11 +24,6 @@ export const Navbar: React.FC = () => {
     ? '/dashboard/entrepreneur' 
     : '/dashboard/investor';
   
-  // User profile route based on role and ID
-  const profileRoute = user 
-    ? `/profile/${user.role}/${user.id}` 
-    : '/login';
-  
   const navLinks = [
     {
       icon: user?.role === 'entrepreneur' ? <Building2 size={18} /> : <CircleDollarSign size={18} />,
@@ -48,7 +43,7 @@ export const Navbar: React.FC = () => {
     {
       icon: <User size={18} />,
       text: 'Profile',
-      path: profileRoute,
+      path: user ? '/settings' : '/login',
     }
   ];
   
@@ -92,7 +87,7 @@ export const Navbar: React.FC = () => {
                   Logout
                 </Button>
                 
-                <Link to={profileRoute} className="flex items-center space-x-2 ml-2">
+                <Link to="/settings" className="flex items-center space-x-2 ml-2">
                   <Avatar
                     src={user.avatarUrl}
                     alt={user.name}
@@ -136,7 +131,11 @@ export const Navbar: React.FC = () => {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {user ? (
               <>
-                <div className="flex items-center space-x-3 px-3 py-2">
+                <Link 
+                  to="/settings"
+                  className="flex items-center space-x-3 px-3 py-2 rounded-md hover:bg-gray-50"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   <Avatar
                     src={user.avatarUrl}
                     alt={user.name}
@@ -147,7 +146,7 @@ export const Navbar: React.FC = () => {
                     <p className="text-sm font-medium text-gray-800">{user.name}</p>
                     <p className="text-xs text-gray-500 capitalize">{user.role}</p>
                   </div>
-                </div>
+                </Link>
                 
                 <div className="border-t border-gray-200 pt-2">
                   {navLinks.map((link, index) => (

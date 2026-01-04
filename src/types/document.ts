@@ -23,6 +23,7 @@ export interface Document {
   signatures: DocumentSignature[];
   sharedWith: string[]; // user IDs
   requiresSignature: boolean;
+  updatedAt: string;
   category?: 'contract' | 'nda' | 'term-sheet' | 'pitch-deck' | 'other';
 }
 

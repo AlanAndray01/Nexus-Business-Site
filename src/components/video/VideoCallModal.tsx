@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Phone, X, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -25,19 +25,27 @@ const VideoCallModal: React.FC<VideoCallModalProps> = ({
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredUsers = availableUsers.filter(u =>
-    u.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Memoize filtered users to prevent re-filtering on every render
+  const filteredUsers = useMemo(() => 
+    availableUsers.filter(u =>
+      u.name.toLowerCase().includes(searchQuery.toLowerCase())
+    ),
+  [availableUsers, searchQuery]);
 
-  const toggleUserSelection = (userId: string) => {
+  // Memoize callbacks
+  const toggleUserSelection = useCallback((userId: string) => {
     setSelectedUsers(prev =>
       prev.includes(userId)
         ? prev.filter(id => id !== userId)
         : [...prev, userId]
     );
-  };
+  }, []);
 
-  const handleStartCall = () => {
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  }, []);
+
+  const handleStartCall = useCallback(() => {
     if (selectedUsers.length === 0) {
       toast.error('Please select at least one participant');
       return;
@@ -57,7 +65,7 @@ const VideoCallModal: React.FC<VideoCallModalProps> = ({
     onClose();
     setSelectedUsers([]);
     setSearchQuery('');
-  };
+  }, [selectedUsers, user, navigate, onClose]);
 
   if (!isOpen) return null;
 
@@ -93,7 +101,7 @@ const VideoCallModal: React.FC<VideoCallModalProps> = ({
               type="text"
               placeholder="Search contacts..."
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>

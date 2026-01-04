@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Search, Filter, Grid, List } from 'lucide-react';
 import { Document, DocumentStatus } from '../../types/document';
 import DocumentCard from './DocumentCard';
@@ -20,24 +20,41 @@ const DocumentList: React.FC<DocumentListProps> = ({
   const [statusFilter, setStatusFilter] = useState<DocumentStatus | 'all'>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
-  const filteredDocuments = documents.filter((doc) => {
-    const matchesSearch =
-      searchQuery === '' ||
-      doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.description?.toLowerCase().includes(searchQuery.toLowerCase());
+  // Memoize filtered documents to prevent re-filtering on every render
+  const filteredDocuments = useMemo(() => {
+    return documents.filter((doc) => {
+      const matchesSearch =
+        searchQuery === '' ||
+        doc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        doc.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesStatus = statusFilter === 'all' || doc.status === statusFilter;
+      const matchesStatus = statusFilter === 'all' || doc.status === statusFilter;
 
-    return matchesSearch && matchesStatus;
-  });
+      return matchesSearch && matchesStatus;
+    });
+  }, [documents, searchQuery, statusFilter]);
 
-  const statusCounts = {
+  // Memoize status counts calculation
+  const statusCounts = useMemo(() => ({
     all: documents.length,
     draft: documents.filter((d) => d.status === 'draft').length,
     'in-review': documents.filter((d) => d.status === 'in-review').length,
     signed: documents.filter((d) => d.status === 'signed').length,
     rejected: documents.filter((d) => d.status === 'rejected').length,
-  };
+  }), [documents]);
+
+  // Memoize callbacks to prevent child re-renders
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  }, []);
+
+  const handleStatusFilterChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setStatusFilter(e.target.value as DocumentStatus | 'all');
+  }, []);
+
+  const handleViewModeChange = useCallback((mode: 'grid' | 'list') => {
+    setViewMode(mode);
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -49,7 +66,7 @@ const DocumentList: React.FC<DocumentListProps> = ({
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
             placeholder="Search documents..."
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
@@ -60,7 +77,7 @@ const DocumentList: React.FC<DocumentListProps> = ({
           <Filter className="w-5 h-5 text-gray-500" />
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as DocumentStatus | 'all')}
+            onChange={handleStatusFilterChange}
             className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="all">All ({statusCounts.all})</option>
@@ -74,7 +91,7 @@ const DocumentList: React.FC<DocumentListProps> = ({
         {/* View Mode Toggle */}
         <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
           <button
-            onClick={() => setViewMode('grid')}
+            onClick={() => handleViewModeChange('grid')}
             className={`p-2 rounded transition-colors ${
               viewMode === 'grid'
                 ? 'bg-white text-blue-600 shadow'
@@ -85,7 +102,7 @@ const DocumentList: React.FC<DocumentListProps> = ({
             <Grid className="w-5 h-5" />
           </button>
           <button
-            onClick={() => setViewMode('list')}
+            onClick={() => handleViewModeChange('list')}
             className={`p-2 rounded transition-colors ${
               viewMode === 'list'
                 ? 'bg-white text-blue-600 shadow'
